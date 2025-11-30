@@ -9,7 +9,7 @@ OWNER_ID = 7654385403
 MSG_EFFECT = 5046509860389126442
 
 SHORT_URL = "shortxlinks.com/" # shortner url 
-SHORT_API = "" 
+SHORT_API = "64d631b036df348caab852591a09288cbf5b6809" 
 SHORT_TUT = "https://t.me/+wekKcN1tjbAxY2U1"
 
 # Bot Configuration
