@@ -14,12 +14,12 @@ SHORT_TUT = "https://t.me/+wekKcN1tjbAxY2U1"
 
 # Bot Configuration
 SESSION = "Kaya"
-TOKEN = "7792842081:AAHXJGLGX-vGwbOAjidVXLLQlcu_HO5JrvU"
+TOKEN = ""
 API_ID = "29245477"
 API_HASH = "0abc83883262245c90ca337b7a0375c4"
 WORKERS = 5
 
-DB_URI = "mongodb+srv://phrolovaxrobot:p0SFEz825QuqzwTi@cluster0.sy26fqm.mongodb.net/?retryWrites=true&w=majority"
+DB_URI = ""
 DB_NAME = "cluster0"
 
 FSUBS = [[-1001457313028, True, 10]] # Force Subscription Channels [channel_id, request_enabled, timer_in_minutes]
