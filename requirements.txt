@@ -8,3 +8,4 @@ markdown
 asyncio
 TgCrypto
 requests
+Flask==2.3.3
