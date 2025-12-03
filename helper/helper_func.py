@@ -361,7 +361,7 @@ def force_sub(func):
                     else:
                         button_text = f"{channel_name}"
                 
-                buttons.append(InlineKeyboardButton(button_text, url=channel_link))
+                buttons.append(InlineKeyboardButton("» 𝙹𝙾𝙸𝙽 𝙲𝙷𝙰𝙽𝙽𝙴𝙻 «", url=channel_link))
 
         # Add "Try Again" button if needed
         from_link = message.text.split(" ")
