@@ -35,26 +35,12 @@ async def settings(client, query):
 <pre>{client.reply_text}</pre>
     """
     reply_markup = InlineKeyboardMarkup([
-    [
-        InlineKeyboardButton('ꜰꜱᴜʙ ᴄʜᴀɴɴᴇʟꜱ', 'fsub'),
-        InlineKeyboardButton('ᴅʙ ᴄʜᴀɴɴᴇʟꜱ', 'db_channels')
-    ],
-    [
-        InlineKeyboardButton('ᴀᴅᴍɪɴꜱ', 'admins'),
-        InlineKeyboardButton('ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ', 'auto_del')
-    ],
-    [
-        InlineKeyboardButton('ʜᴏᴍᴇ', 'home'),
-        InlineKeyboardButton('›› ɴᴇxᴛ', 'settings_page_2')
-    ]
-])
-
-try:
-    await query.message.edit_text(msg[:4096], reply_markup=reply_markup)
-except:
-    await query.message.edit_caption(msg[:1024], reply_markup=reply_markup)
-
-return
+        [InlineKeyboardButton('ꜰꜱᴜʙ ᴄʜᴀɴɴᴇʟꜱ', 'fsub'), InlineKeyboardButton('ᴅʙ ᴄʜᴀɴɴᴇʟꜱ', 'db_channels')],
+        [InlineKeyboardButton('ᴀᴅᴍɪɴꜱ', 'admins'), InlineKeyboardButton('ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ', 'auto_del')],
+        [InlineKeyboardButton('ʜᴏᴍᴇ', 'home'), InlineKeyboardButton('›› ɴᴇxᴛ', 'settings_page_2')]
+    ])
+    await query.message.edit_text(msg, reply_markup=reply_markup)
+    return
 
 #===============================================================#
 
