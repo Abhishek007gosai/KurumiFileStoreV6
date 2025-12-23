@@ -90,7 +90,7 @@ async def start_command(client: Client, message: Message):
                        else ("" if not msg.caption else msg.caption.html))
             reply_markup = msg.reply_markup if DISABLE_CHANNEL_BUTTON else None
             try:
-                copied_msg = await msg.copy(
+                copied_msg = await msg.forward(
                     chat_id=message.from_user.id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
