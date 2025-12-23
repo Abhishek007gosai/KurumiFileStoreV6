@@ -46,98 +46,62 @@ async def start_command(client: Client, message: Message):
     FILE_AUTO_DELETE = await db.get_del_timer()  # Example: 3600 seconds (1 hour)
 
     # Handle normal message flow
-def rebuild_reply_markup(markup):
-    if not markup or not markup.inline_keyboard:
-        return None
-
-    keyboard = []
-
-    for row in markup.inline_keyboard:
-        new_row = []
-        for btn in row:
-            if btn.url:
-                new_row.append(
-                    InlineKeyboardButton(
-                        text=btn.text,
-                        url=btn.url
-                    )
-                )
-        if new_row:
-            keyboard.append(new_row)
-
-    return InlineKeyboardMarkup(keyboard) if keyboard else None
-
-
-@Client.on_message(filters.private & filters.text)
-async def start_handler(client, message):
-
     text = message.text
-    if not text or len(text) <= 7:
-        return
-
-    try:
-        base64_string = text.split(" ", 1)[1]
-    except IndexError:
-        return
-
-    string = await decode(base64_string)
-    argument = string.split("-")
-
-    ids = []
-
-    try:
-        if len(argument) == 3:
-            start = int(int(argument[1]) / abs(client.db_channel.id))
-            end = int(int(argument[2]) / abs(client.db_channel.id))
-            ids = range(start, end + 1) if start <= end else range(start, end - 1, -1)
-
-        elif len(argument) == 2:
-            ids = [int(int(argument[1]) / abs(client.db_channel.id))]
-        else:
+    if len(text) > 7:
+        try:
+            base64_string = text.split(" ", 1)[1]
+        except IndexError:
             return
 
-    except Exception as e:
-        print(f"ID decode error: {e}")
-        return
+        string = await decode(base64_string)
+        argument = string.split("-")
 
-    temp_msg = await message.reply("<b>Please wait...</b>")
+        ids = []
+        if len(argument) == 3:
+            try:
+                start = int(int(argument[1]) / abs(client.db_channel.id))
+                end = int(int(argument[2]) / abs(client.db_channel.id))
+                ids = range(start, end + 1) if start <= end else list(range(start, end - 1, -1))
+            except Exception as e:
+                print(f"Error decoding IDs: {e}")
+                return
 
-    try:
-        messages = await get_messages(client, ids)
-    except Exception as e:
-        await message.reply_text("Something went wrong!")
-        print(f"Fetch error: {e}")
-        return
-    finally:
-        await temp_msg.delete()
+        elif len(argument) == 2:
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except Exception as e:
+                print(f"Error decoding ID: {e}")
+                return
 
-    for msg in messages:
-
-        caption = (
-            CUSTOM_CAPTION.format(
-                previouscaption="" if not msg.caption else msg.caption.html,
-                filename=msg.document.file_name
-            )
-            if CUSTOM_CAPTION and msg.document
-            else ("" if not msg.caption else msg.caption.html)
-        )
-
-        reply_markup = None
-        if DISABLE_CHANNEL_BUTTON and msg.reply_markup:
-            reply_markup = rebuild_reply_markup(msg.reply_markup)
-
+        temp_msg = await message.reply("<b>Please wait...</b>")
         try:
-            await msg.copy(
-                chat_id=message.from_user.id,
-                caption=caption,
-                parse_mode=ParseMode.HTML,
-                reply_markup=reply_markup,
-                protect_content=PROTECT_CONTENT
-            )
-            await asyncio.sleep(0.1)
-
+            messages = await get_messages(client, ids)
         except Exception as e:
-            print(f"Failed to send message: {e}")
+            await message.reply_text("Something went wrong!")
+            print(f"Error getting messages: {e}")
+            return
+        finally:
+            await temp_msg.delete()
+ 
+        codeflix_msgs = []
+        for msg in messages:
+            caption = (CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, 
+                                             filename=msg.document.file_name) if bool(CUSTOM_CAPTION) and bool(msg.document)
+                       else ("" if not msg.caption else msg.caption.html))
+            reply_markup = msg.reply_markup if DISABLE_CHANNEL_BUTTON else None
+            try:
+                copied_msg = await msg.copy(
+                    chat_id=message.from_user.id,
+                    caption=caption,
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=reply_markup,
+                    protect_content=PROTECT_CONTENT,
+                    button=button.HTML
+                )
+                await asyncio.sleep(0.1)
+                codeflix_msgs.append(copied_msg)
+            except Exception as e:
+                print(f"Failed to send message: {e}")
         
         if FILE_AUTO_DELETE > 0:
             notification_msg = await message.reply(
